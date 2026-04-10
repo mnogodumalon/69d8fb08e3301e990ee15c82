@@ -1,0 +1,8 @@
+- SKR03-Kontenrahmen (skr03_kontenrahmen): kontonummer[string/text], kontobezeichnung[string/text], kontenklasse[lookup/select], steuerkennung[string/text], skr03_hinweis[string/textarea]
+- Belegerfassung (belegerfassung): belegtyp[lookup/select], dokumentklassifikation[lookup/select], ocr_status[lookup/select], verarbeitungsstatus[lookup/select], upload_datum[date/datetimeminute], beleg_bemerkung[string/textarea], beleg_datei[file]
+- Belegpositionen (belegpositionen): waehrung[lookup/select], zahlungsart[lookup/select], kartenart[lookup/select], beleg_referenz[applookup/select], rechnungsdatum[date/date], rechnungsnummer[string/text], rechnungssteller[string/text], adresse_strasse[string/text], adresse_hausnummer[string/text], adresse_plz[string/text], adresse_ort[string/text], ust_id[string/text], artikel[string/textarea], menge[number], einheit[string/text], einzelpreis[number], betrag_netto[number], mwst_satz[lookup/select], mwst_betrag[number], betrag_brutto[number]
+  → beleg_referenz links to app_id 69d8fae8666f4fa5ddd1a8b6
+- Kontierung und Prüfung (kontierung_und_pruefung): position_referenz[applookup/select], skr03_konto_referenz[applookup/select], plausibilitaet[lookup/select], konfidenz[number], pruefhinweis[string/textarea], manuell_korrigiert[bool], korrekturbemerkung[string/textarea]
+  → position_referenz links to app_id 69d8fae8bbe0c2d0fb5178fa
+  → skr03_konto_referenz links to app_id 69d8fae09a27734ee7faa252
+- Export und Ausgabe (export_und_ausgabe): export_bezeichnung[string/text], zeitraum_von[date/date], zeitraum_bis[date/date], exportformat[multiplelookup/checkbox], exportstatus[lookup/select], exportdatum[date/datetimeminute], dateiname[string/text], export_bemerkung[string/textarea]
