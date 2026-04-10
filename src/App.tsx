@@ -1,9 +1,9 @@
+import { lazy, Suspense } from 'react';
 import { HashRouter, Routes, Route } from 'react-router-dom';
 import { ActionsProvider } from '@/context/ActionsContext';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { Layout } from '@/components/Layout';
 import DashboardOverview from '@/pages/DashboardOverview';
-import { WorkflowPlaceholders } from '@/components/WorkflowPlaceholders';
 import AdminPage from '@/pages/AdminPage';
 import Skr03KontenrahmenPage from '@/pages/Skr03KontenrahmenPage';
 import BelegerfassungPage from '@/pages/BelegerfassungPage';
@@ -15,6 +15,9 @@ import PublicFormBelegerfassung from '@/pages/public/PublicForm_Belegerfassung';
 import PublicFormBelegpositionen from '@/pages/public/PublicForm_Belegpositionen';
 import PublicFormKontierungUndPruefung from '@/pages/public/PublicForm_KontierungUndPruefung';
 import PublicFormExportUndAusgabe from '@/pages/public/PublicForm_ExportUndAusgabe';
+
+const BelegVerarbeitungPage = lazy(() => import('@/pages/intents/BelegVerarbeitungPage'));
+const BuchungsExportPage = lazy(() => import('@/pages/intents/BuchungsExportPage'));
 
 export default function App() {
   return (
@@ -28,13 +31,15 @@ export default function App() {
             <Route path="public/69d8faea4e6ba5c11bf424fd" element={<PublicFormKontierungUndPruefung />} />
             <Route path="public/69d8faea03592afd38c20888" element={<PublicFormExportUndAusgabe />} />
             <Route element={<Layout />}>
-              <Route index element={<><div className="mb-8"><WorkflowPlaceholders /></div><DashboardOverview /></>} />
+              <Route index element={<DashboardOverview />} />
               <Route path="skr03-kontenrahmen" element={<Skr03KontenrahmenPage />} />
               <Route path="belegerfassung" element={<BelegerfassungPage />} />
               <Route path="belegpositionen" element={<BelegpositionenPage />} />
               <Route path="kontierung-und-pruefung" element={<KontierungUndPruefungPage />} />
               <Route path="export-und-ausgabe" element={<ExportUndAusgabePage />} />
               <Route path="admin" element={<AdminPage />} />
+              <Route path="intents/beleg-verarbeitung" element={<Suspense fallback={null}><BelegVerarbeitungPage /></Suspense>} />
+              <Route path="intents/buchungs-export" element={<Suspense fallback={null}><BuchungsExportPage /></Suspense>} />
             </Route>
           </Routes>
         </ActionsProvider>

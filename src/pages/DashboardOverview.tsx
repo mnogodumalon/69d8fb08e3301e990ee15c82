@@ -115,6 +115,25 @@ export default function DashboardOverview() {
 
   return (
     <div className="space-y-6">
+      {/* Intent Workflows */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <a href="#/intents/beleg-verarbeitung" className="bg-card border border-border border-l-4 border-l-primary rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow flex items-center gap-3 min-w-0 overflow-hidden">
+          <IconReceipt size={22} className="text-primary shrink-0" />
+          <div className="min-w-0 flex-1">
+            <div className="font-semibold truncate">Beleg verarbeiten</div>
+            <div className="text-sm text-muted-foreground truncate">Beleg erfassen → Positionen anlegen → Kontierung prüfen</div>
+          </div>
+          <IconChevronRight size={18} className="text-muted-foreground shrink-0" />
+        </a>
+        <a href="#/intents/buchungs-export" className="bg-card border border-border border-l-4 border-l-primary rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow flex items-center gap-3 min-w-0 overflow-hidden">
+          <IconFileExport size={22} className="text-primary shrink-0" />
+          <div className="min-w-0 flex-1">
+            <div className="font-semibold truncate">Buchungen exportieren</div>
+            <div className="text-sm text-muted-foreground truncate">Zeitraum wählen → Kontierungen prüfen → Export erstellen</div>
+          </div>
+          <IconChevronRight size={18} className="text-muted-foreground shrink-0" />
+        </a>
+      </div>
       {/* KPI Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <StatCard
