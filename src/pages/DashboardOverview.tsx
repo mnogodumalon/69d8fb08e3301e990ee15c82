@@ -18,7 +18,7 @@ import {
   IconAlertCircle, IconTool, IconRefresh, IconCheck,
   IconPlus, IconPencil, IconTrash, IconFileText,
   IconReceipt, IconArrowRight, IconFileExport,
-  IconListCheck, IconCoins,
+  IconListCheck, IconCoins, IconChevronRight,
 } from '@tabler/icons-react';
 
 const APPGROUP_ID = '69d8fb08e3301e990ee15c82';
@@ -138,6 +138,36 @@ export default function DashboardOverview() {
 
   return (
     <div className="space-y-6">
+      {/* Workflow-Navigation */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <a
+          href="#/intents/beleg-erfassung"
+          className="flex items-center gap-4 bg-card border border-border rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow border-l-4 border-l-primary overflow-hidden"
+        >
+          <div className="shrink-0 w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+            <IconReceipt size={20} className="text-primary" stroke={1.5} />
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="font-semibold text-sm text-foreground truncate">Beleg erfassen & kontieren</p>
+            <p className="text-xs text-muted-foreground truncate">Beleg hochladen, Positionen prüfen, Kontierung abschließen</p>
+          </div>
+          <IconChevronRight size={16} className="text-muted-foreground shrink-0" />
+        </a>
+        <a
+          href="#/intents/export-workflow"
+          className="flex items-center gap-4 bg-card border border-border rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow border-l-4 border-l-primary overflow-hidden"
+        >
+          <div className="shrink-0 w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+            <IconFileExport size={20} className="text-primary" stroke={1.5} />
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="font-semibold text-sm text-foreground truncate">Export erstellen</p>
+            <p className="text-xs text-muted-foreground truncate">Zeitraum wählen, Belege prüfen, Export starten</p>
+          </div>
+          <IconChevronRight size={16} className="text-muted-foreground shrink-0" />
+        </a>
+      </div>
+
       {/* KPI-Zeile */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <StatCard
