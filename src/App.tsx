@@ -3,7 +3,6 @@ import { ActionsProvider } from '@/context/ActionsContext';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { Layout } from '@/components/Layout';
 import DashboardOverview from '@/pages/DashboardOverview';
-import { WorkflowPlaceholders } from '@/components/WorkflowPlaceholders';
 import AdminPage from '@/pages/AdminPage';
 import BelegerfassungPage from '@/pages/BelegerfassungPage';
 import UstAbfuehrungLeasingfahrzeugPage from '@/pages/UstAbfuehrungLeasingfahrzeugPage';
@@ -13,6 +12,8 @@ import LeasingfahrzeugPage from '@/pages/LeasingfahrzeugPage';
 import KontierungUndPruefungPage from '@/pages/KontierungUndPruefungPage';
 import BelegpositionenPage from '@/pages/BelegpositionenPage';
 import BeleguebersichtPage from '@/pages/BeleguebersichtPage';
+import BelegErfassenKontierenPage from '@/pages/intents/BelegErfassenKontierenPage';
+import UstAbfuehrungVorbereitenPage from '@/pages/intents/UstAbfuehrungVorbereitenPage';
 
 export default function App() {
   return (
@@ -21,7 +22,9 @@ export default function App() {
         <ActionsProvider>
           <Routes>
             <Route element={<Layout />}>
-              <Route index element={<><div className="mb-8"><WorkflowPlaceholders /></div><DashboardOverview /></>} />
+              <Route index element={<DashboardOverview />} />
+              <Route path="intents/beleg-erfassen-kontieren" element={<BelegErfassenKontierenPage />} />
+              <Route path="intents/ust-abfuehrung-vorbereiten" element={<UstAbfuehrungVorbereitenPage />} />
               <Route path="belegerfassung" element={<BelegerfassungPage />} />
               <Route path="ust-abfuehrung-leasingfahrzeug" element={<UstAbfuehrungLeasingfahrzeugPage />} />
               <Route path="export-und-ausgabe" element={<ExportUndAusgabePage />} />

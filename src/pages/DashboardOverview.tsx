@@ -15,7 +15,7 @@ import {
   IconAlertCircle, IconTool, IconRefresh, IconCheck,
   IconPlus, IconPencil, IconTrash, IconFileInvoice,
   IconClockHour4, IconCheckbox, IconCircleCheck, IconBan,
-  IconScan, IconSearch, IconX
+  IconScan, IconSearch, IconX, IconChevronRight, IconListCheck, IconCar
 } from '@tabler/icons-react';
 
 const APPGROUP_ID = '69d8fb08e3301e990ee15c82';
@@ -103,6 +103,25 @@ export default function DashboardOverview() {
 
   return (
     <div className="space-y-6">
+      {/* Workflow-Navigation */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <a href="#/intents/beleg-erfassen-kontieren" className="bg-card border border-border border-l-4 border-l-primary rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow flex items-center gap-3 min-w-0">
+          <IconListCheck size={22} className="text-primary shrink-0" />
+          <div className="flex-1 min-w-0">
+            <div className="font-semibold text-sm truncate">Beleg erfassen &amp; kontieren</div>
+            <div className="text-xs text-muted-foreground line-clamp-2">Beleg hochladen, Positionen anlegen und Kontierung prüfen</div>
+          </div>
+          <IconChevronRight size={18} className="text-muted-foreground shrink-0" />
+        </a>
+        <a href="#/intents/ust-abfuehrung-vorbereiten" className="bg-card border border-border border-l-4 border-l-primary rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow flex items-center gap-3 min-w-0">
+          <IconCar size={22} className="text-primary shrink-0" />
+          <div className="flex-1 min-w-0">
+            <div className="font-semibold text-sm truncate">USt-Abführung vorbereiten</div>
+            <div className="text-xs text-muted-foreground line-clamp-2">Fahrzeug wählen, Zeitraum festlegen und USt-Buchung anlegen</div>
+          </div>
+          <IconChevronRight size={18} className="text-muted-foreground shrink-0" />
+        </a>
+      </div>
       {/* KPI-Zeile */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <StatCard
