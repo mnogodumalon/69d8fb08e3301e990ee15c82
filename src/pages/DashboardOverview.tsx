@@ -97,6 +97,25 @@ export default function DashboardOverview() {
 
   return (
     <div className="space-y-6">
+      {/* Workflow-Navigation */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <a href="#/intents/beleg-kontierung" className="bg-card border border-border rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow flex items-center gap-4 overflow-hidden border-l-4 border-l-primary">
+          <IconFileInvoice size={28} className="text-primary shrink-0" />
+          <div className="min-w-0 flex-1">
+            <div className="font-semibold text-sm truncate">Beleg kontieren und prüfen</div>
+            <div className="text-muted-foreground text-xs line-clamp-2">Beleg auswählen, Positionen prüfen und SKR03-Konten zuweisen</div>
+          </div>
+          <IconArrowRight size={18} className="text-muted-foreground shrink-0" />
+        </a>
+        <a href="#/intents/leasing-abrechnung" className="bg-card border border-border rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow flex items-center gap-4 overflow-hidden border-l-4 border-l-primary">
+          <IconCar size={28} className="text-primary shrink-0" />
+          <div className="min-w-0 flex-1">
+            <div className="font-semibold text-sm truncate">Leasing UST-Abrechnung</div>
+            <div className="text-muted-foreground text-xs line-clamp-2">Fahrzeug wählen, UST-Abführung buchen und Export erstellen</div>
+          </div>
+          <IconArrowRight size={18} className="text-muted-foreground shrink-0" />
+        </a>
+      </div>
       {/* KPI Row */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <StatCard
