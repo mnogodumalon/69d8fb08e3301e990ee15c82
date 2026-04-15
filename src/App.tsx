@@ -11,6 +11,8 @@ import KontierungUndPruefungPage from '@/pages/KontierungUndPruefungPage';
 import Skr03KontenrahmenPage from '@/pages/Skr03KontenrahmenPage';
 import UstAbfuehrungLeasingfahrzeugPage from '@/pages/UstAbfuehrungLeasingfahrzeugPage';
 import BelegpositionenPage from '@/pages/BelegpositionenPage';
+// <custom:imports>
+// </custom:imports>
 
 export default function App() {
   return (
@@ -28,6 +30,8 @@ export default function App() {
               <Route path="ust-abfuehrung-leasingfahrzeug" element={<UstAbfuehrungLeasingfahrzeugPage />} />
               <Route path="belegpositionen" element={<BelegpositionenPage />} />
               <Route path="admin" element={<AdminPage />} />
+              {/* <custom:routes> */}
+              {/* </custom:routes> */}
             </Route>
           </Routes>
         </ActionsProvider>
