@@ -164,12 +164,6 @@ export default function DashboardOverview() {
               hasArrow
             />
             <ProcessStep
-              label="Positionen überarbeiten oder neu erfassen"
-              href="#/belegpositionen"
-              icon={<IconEdit size={14} className="shrink-0" />}
-              hasArrow
-            />
-            <ProcessStep
               label="Berechnung des UST-Betrages für die UST-Voranmeldung"
               href="#/ust-abfuehrung-leasingfahrzeug"
               icon={<IconCalculator size={14} className="shrink-0" />}
