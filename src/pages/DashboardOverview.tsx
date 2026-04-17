@@ -35,6 +35,17 @@ const STATUS_CONFIG: Record<VerarbeitungsStatus, { label: string; color: string;
 
 const ALL_STATUSES: VerarbeitungsStatus[] = ['neu', 'in_bearbeitung', 'geprueft', 'freigegeben', 'abgelehnt'];
 
+const LEASING_KEYWORDS = ['leasing'];
+const AUTO_BRANDS = [
+  'bmw', 'mercedes', 'audi', 'vw', 'volkswagen', 'porsche', 'tesla',
+  'ford', 'opel', 'toyota', 'renault', 'peugeot', 'citroen', 'citroën',
+  'skoda', 'škoda', 'seat', 'fiat', 'kia', 'hyundai', 'mazda', 'honda',
+  'nissan', 'volvo', 'land rover', 'jaguar', 'bentley', 'lamborghini',
+  'ferrari', 'maserati', 'alfa romeo', 'dacia', 'suzuki', 'subaru',
+  'mitsubishi', 'jeep', 'chrysler', 'dodge', 'lexus', 'infiniti',
+  'genesis', 'mini', 'rolls-royce', 'smart', 'lancia', 'saab',
+];
+
 export default function DashboardOverview() {
   const {
     belegerfassung, belegpositionen,
@@ -125,16 +136,14 @@ export default function DashboardOverview() {
   }, [enrichedBelegpositionen]);
 
   const leasingBelege = useMemo(() => {
-    const leasingIds = new Set<string>();
-    for (const pos of enrichedBelegpositionen) {
-      if (pos.fields.ust_abfuehrung_referenz || pos.fields.eigenanteil_leasingmwst_flag) {
-        const id = extractRecordId(pos.fields.beleg_referenz);
-        if (id) leasingIds.add(id);
-      }
-    }
-    if (leasingIds.size === 0) return enrichedBelegerfassung;
-    return enrichedBelegerfassung.filter(b => leasingIds.has(b.record_id));
-  }, [enrichedBelegerfassung, enrichedBelegpositionen]);
+    return enrichedBelegerfassung.filter(b => {
+      const bemerkung = (b.fields.beleg_bemerkung ?? '').toLowerCase();
+      if (!bemerkung) return false;
+      if (LEASING_KEYWORDS.some(kw => bemerkung.includes(kw))) return true;
+      if (AUTO_BRANDS.some(brand => bemerkung.includes(brand))) return true;
+      return false;
+    });
+  }, [enrichedBelegerfassung]);
 
   useEffect(() => {
     if (ustTrigger === 0) return;
