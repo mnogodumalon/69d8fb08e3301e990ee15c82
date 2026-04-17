@@ -3,7 +3,7 @@ import { enrichBelegerfassung, enrichBelegpositionen } from '@/lib/enrich';
 import type { EnrichedBelegerfassung, EnrichedBelegpositionen } from '@/types/enriched';
 import { LivingAppsService, extractRecordId } from '@/services/livingAppsService';
 import { formatDate, formatCurrency } from '@/lib/formatters';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef, useEffect } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -108,6 +108,44 @@ export default function DashboardOverview() {
     );
   }, [enrichedBelegpositionen, selectedBelegId]);
 
+  const [ustTrigger, setUstTrigger] = useState(0);
+  const [ustHighlight, setUstHighlight] = useState(false);
+  const ustBerechnungRef = useRef<HTMLDivElement>(null);
+  const showUstBerechnung = ustTrigger > 0;
+
+  const positionenByBeleg = useMemo(() => {
+    const map: Record<string, EnrichedBelegpositionen[]> = {};
+    for (const pos of enrichedBelegpositionen) {
+      const id = extractRecordId(pos.fields.beleg_referenz);
+      if (!id) continue;
+      if (!map[id]) map[id] = [];
+      map[id].push(pos);
+    }
+    return map;
+  }, [enrichedBelegpositionen]);
+
+  const leasingBelege = useMemo(() => {
+    const leasingIds = new Set<string>();
+    for (const pos of enrichedBelegpositionen) {
+      if (pos.fields.ust_abfuehrung_referenz || pos.fields.eigenanteil_leasingmwst_flag) {
+        const id = extractRecordId(pos.fields.beleg_referenz);
+        if (id) leasingIds.add(id);
+      }
+    }
+    if (leasingIds.size === 0) return enrichedBelegerfassung;
+    return enrichedBelegerfassung.filter(b => leasingIds.has(b.record_id));
+  }, [enrichedBelegerfassung, enrichedBelegpositionen]);
+
+  useEffect(() => {
+    if (ustTrigger === 0) return;
+    setUstHighlight(true);
+    const t1 = setTimeout(() => {
+      ustBerechnungRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 50);
+    const t2 = setTimeout(() => setUstHighlight(false), 2200);
+    return () => { clearTimeout(t1); clearTimeout(t2); };
+  }, [ustTrigger]);
+
   if (loading) return <DashboardSkeleton />;
   if (error) return <DashboardError error={error} onRetry={fetchAll} />;
 
@@ -171,7 +209,7 @@ export default function DashboardOverview() {
             />
             <ProcessStep
               label="Berechnung des UST-Betrages für die UST-Voranmeldung"
-              href="#/ust-abfuehrung-leasingfahrzeug"
+              onClick={() => setUstTrigger(n => n + 1)}
               icon={<IconCalculator size={14} className="shrink-0" />}
               hasArrow
             />
@@ -493,6 +531,105 @@ export default function DashboardOverview() {
         </div>
       </div>
 
+      {/* Leasing-Lastschriften Tabelle */}
+      {showUstBerechnung && (
+        <div
+          ref={ustBerechnungRef}
+          className={`bg-card border rounded-2xl overflow-hidden transition-all duration-300 ${
+            ustHighlight ? 'ring-2 ring-primary border-primary' : 'border-border'
+          }`}
+        >
+          <div className="flex items-center justify-between px-4 py-3 border-b border-border">
+            <div className="flex items-center gap-2">
+              <IconCar size={16} className="text-primary shrink-0" />
+              <span className="text-sm font-semibold text-foreground">Leasing-Lastschriften</span>
+              <span className="text-xs text-muted-foreground">(Belege mit Leasing-Bezug)</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <span className="text-xs font-bold text-primary">{leasingBelege.length} Belege</span>
+              <button
+                onClick={() => { setUstTrigger(0); setUstHighlight(false); }}
+                className="p-1 rounded hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <IconX size={14} />
+              </button>
+            </div>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs">
+              <thead>
+                <tr className="border-b border-border bg-muted/30">
+                  <th className="text-left px-4 py-2.5 text-muted-foreground font-medium whitespace-nowrap">Beleg-Datei (PDF / JPG / PNG)</th>
+                  <th className="text-left px-4 py-2.5 text-muted-foreground font-medium whitespace-nowrap">Belegtyp</th>
+                  <th className="text-left px-4 py-2.5 text-muted-foreground font-medium whitespace-nowrap">Upload-Datum</th>
+                  <th className="text-left px-4 py-2.5 text-muted-foreground font-medium whitespace-nowrap">Bemerkungen zum Beleg</th>
+                  <th className="text-left px-4 py-2.5 text-muted-foreground font-medium whitespace-nowrap">Belegpositionen</th>
+                </tr>
+              </thead>
+              <tbody>
+                {leasingBelege.length === 0 ? (
+                  <tr>
+                    <td colSpan={5} className="text-center py-12 text-muted-foreground">
+                      Keine Belege mit Leasing-Bezug vorhanden.
+                    </td>
+                  </tr>
+                ) : (
+                  leasingBelege.map(beleg => {
+                    const positionen = positionenByBeleg[beleg.record_id] ?? [];
+                    const totalBrutto = positionen.reduce((s, p) => s + (p.fields.betrag_brutto ?? 0), 0);
+                    const totalMwst = positionen.reduce((s, p) => s + (p.fields.mwst_betrag ?? 0), 0);
+                    return (
+                      <tr key={beleg.record_id} className="border-b border-border last:border-0 hover:bg-muted/20">
+                        <td className="px-4 py-3">
+                          {beleg.fields.beleg_datei ? (
+                            <a
+                              href={beleg.fields.beleg_datei}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex items-center gap-1.5 text-primary hover:underline font-medium whitespace-nowrap"
+                            >
+                              <IconFileInvoice size={14} className="shrink-0" />
+                              Datei öffnen
+                            </a>
+                          ) : (
+                            <span className="text-muted-foreground">—</span>
+                          )}
+                        </td>
+                        <td className="px-4 py-3 text-foreground whitespace-nowrap">{beleg.fields.belegtyp?.label ?? '—'}</td>
+                        <td className="px-4 py-3 text-foreground whitespace-nowrap">
+                          {beleg.fields.upload_datum ? formatDate(beleg.fields.upload_datum) : '—'}
+                        </td>
+                        <td className="px-4 py-3 max-w-xs">
+                          <span className="line-clamp-2 text-foreground">{beleg.fields.beleg_bemerkung ?? '—'}</span>
+                        </td>
+                        <td className="px-4 py-3">
+                          {totalBrutto === 0 && totalMwst === 0 ? (
+                            <span className="text-muted-foreground italic">Keine Positionen</span>
+                          ) : (
+                            <div className="flex flex-wrap gap-2 items-center">
+                              {totalBrutto > 0 && (
+                                <span className="text-foreground font-medium whitespace-nowrap">
+                                  Lastschrift: {formatCurrency(totalBrutto)}
+                                </span>
+                              )}
+                              {totalMwst > 0 && (
+                                <span className="text-muted-foreground whitespace-nowrap">
+                                  USt: {formatCurrency(totalMwst)}
+                                </span>
+                              )}
+                            </div>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
       {/* Dialoge */}
       <BelegerfassungDialog
         open={dialogOpen}
@@ -521,16 +658,18 @@ export default function DashboardOverview() {
   );
 }
 
-function ProcessStep({ label, href, icon, hasArrow }: {
+function ProcessStep({ label, href, icon, hasArrow, onClick }: {
   label: string;
-  href: string;
+  href?: string;
   icon: React.ReactNode;
   hasArrow?: boolean;
+  onClick?: () => void;
 }) {
   return (
     <div className="flex flex-col">
       <a
-        href={href}
+        href={href ?? '#'}
+        onClick={onClick ? (e) => { e.preventDefault(); onClick(); } : undefined}
         className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-primary/5 transition-colors group text-foreground hover:text-primary"
       >
         <span className="text-muted-foreground group-hover:text-primary transition-colors shrink-0">{icon}</span>
