@@ -1,6 +1,7 @@
 import { HashRouter, Routes, Route } from 'react-router-dom';
 import { ActionsProvider } from '@/context/ActionsContext';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
+import { ErrorBusProvider } from '@/components/ErrorBus';
 import { Layout } from '@/components/Layout';
 import DashboardOverview from '@/pages/DashboardOverview';
 import AdminPage from '@/pages/AdminPage';
@@ -17,25 +18,27 @@ import BelegpositionenPage from '@/pages/BelegpositionenPage';
 export default function App() {
   return (
     <ErrorBoundary>
-      <HashRouter>
-        <ActionsProvider>
-          <Routes>
-            <Route element={<Layout />}>
-              <Route index element={<DashboardOverview />} />
-              <Route path="belegerfassung" element={<BelegerfassungPage />} />
-              <Route path="export-und-ausgabe" element={<ExportUndAusgabePage />} />
-              <Route path="leasingfahrzeug" element={<LeasingfahrzeugPage />} />
-              <Route path="kontierung-und-pruefung" element={<KontierungUndPruefungPage />} />
-              <Route path="skr03-kontenrahmen" element={<Skr03KontenrahmenPage />} />
-              <Route path="ust-abfuehrung-leasingfahrzeug" element={<UstAbfuehrungLeasingfahrzeugPage />} />
-              <Route path="belegpositionen" element={<BelegpositionenPage />} />
-              <Route path="admin" element={<AdminPage />} />
-              {/* <custom:routes> */}
+      <ErrorBusProvider>
+        <HashRouter>
+          <ActionsProvider>
+            <Routes>
+              <Route element={<Layout />}>
+                <Route index element={<DashboardOverview />} />
+                <Route path="belegerfassung" element={<BelegerfassungPage />} />
+                <Route path="export-und-ausgabe" element={<ExportUndAusgabePage />} />
+                <Route path="leasingfahrzeug" element={<LeasingfahrzeugPage />} />
+                <Route path="kontierung-und-pruefung" element={<KontierungUndPruefungPage />} />
+                <Route path="skr03-kontenrahmen" element={<Skr03KontenrahmenPage />} />
+                <Route path="ust-abfuehrung-leasingfahrzeug" element={<UstAbfuehrungLeasingfahrzeugPage />} />
+                <Route path="belegpositionen" element={<BelegpositionenPage />} />
+                <Route path="admin" element={<AdminPage />} />
+                {/* <custom:routes> */}
               {/* </custom:routes> */}
-            </Route>
-          </Routes>
-        </ActionsProvider>
-      </HashRouter>
+              </Route>
+            </Routes>
+          </ActionsProvider>
+        </HashRouter>
+      </ErrorBusProvider>
     </ErrorBoundary>
   );
 }
